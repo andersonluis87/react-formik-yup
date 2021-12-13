@@ -10,7 +10,7 @@ export const RadioButtonField =({
   }) => {
     const [field, meta] = useField(props);
 
-    const radioClassName = `form-check-input ${meta.error ? 'is-invalid' : ''}`;
+    const radioClassName = `form-check-input ${meta.touched && meta.error ? 'is-invalid' : ''}`;
 
     return (
       <div className="form-check">
