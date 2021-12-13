@@ -1,12 +1,17 @@
 import React, { useState} from 'react'
-import { Formik, Form } from 'formik';
+import { Formik, Form, FieldArray } from 'formik';
 import * as Yup from 'yup'; 
-import { TextField, CheckboxField, RadioButtonField, RadioButtonGroup } from './FormComponents';
+import { TextField, CheckboxField, RadioButtonField, RadioButtonGroup, SelectField } from './FormComponents';
+import { randomNumber } from '../utils';
+import { countries, preferences } from '../data'
 
 export const SignUp = () => {
     const [isFormikDataVisible, setFormikDataVisibility] = useState(false);
     const handleFormikDataVisibility = () => {
         setFormikDataVisibility(!isFormikDataVisible)
+    }
+    const returnNewPreferenceObject = () => { 
+        return { type: '', title: '', id: "" + randomNumber() }
     } 
 
     const validate = Yup.object({
@@ -27,7 +32,13 @@ export const SignUp = () => {
             .required('Confirm password is required'),
         gender: Yup.string().required('Gender is required'),
         terms: Yup.boolean()
-            .oneOf([true], 'You must accept the terms and conditions to continue')
+            .oneOf([true], 'You must accept the terms and conditions to continue'),
+        country: Yup.string().required('Select the country'),
+        preferences: Yup.array().of(Yup.object({
+            title: Yup.string().required('Title is required'),
+            type: Yup.string().required('Type is required'),
+            id: Yup.string().required()
+        })),
     })
 
     return (
@@ -40,6 +51,14 @@ export const SignUp = () => {
                 confirmPassword: '',
                 gender: '',
                 terms: false,
+                country: '',
+                preferences: [
+                    {
+                        id: "" + randomNumber(),
+                        type: "",
+                        title: ""
+                    }
+                ]
             }}
             validationSchema={validate}
             onSubmit={( data, { setSubmitting, resetForm }) => {
@@ -75,6 +94,46 @@ export const SignUp = () => {
                                 <RadioButtonField label="Male" name="gender" id="male" />
                                 <RadioButtonField label="Female" name="gender" id="female"  />
                             </RadioButtonGroup>
+
+                            <SelectField label="Country" id="country" name="country" options={countries} />
+
+                            <FieldArray name="preferences">
+                                {arrayHelpers => (
+                                    <div className="container border border-1 mt-3 mb-3">
+                                        <label className="mb-2 mt-2">Choose your preferences</label>
+                                        {formik.values.preferences.map((preference, index) => {
+                                            return (
+                                                <div key={index}>
+                                                    <SelectField 
+                                                        id={preference.id} 
+                                                        className="input-group" 
+                                                        label="Preference" 
+                                                        name={`preferences.${index}.type`} 
+                                                        options={preferences} 
+                                                    />
+                                                    <TextField name={`preferences.${index}.title`} placeholder="Type your preference" type="text" />
+
+                                                    <button
+                                                        className="btn btn-secondary btn-sm mb-3 "
+                                                        onClick={() => arrayHelpers.push(returnNewPreferenceObject())} 
+                                                        type="button">
+                                                        + preference
+                                                    </button>
+
+                                                    <button
+                                                        className="btn btn-danger btn-sm ml-3 mb-3 "
+                                                        onClick={() => index > 0 && arrayHelpers.remove(index)} 
+                                                        type="button">
+                                                        - preference
+                                                    </button>  
+                                                </div>
+                                            )
+                                        })}
+                                    
+                                    </div>
+                                )}
+                            </FieldArray>
+
                             <TextField label="Password" name="password" type="password" />
                             <TextField label="Confirm Password" name="confirmPassword" type="password" />
 

@@ -11,6 +11,7 @@ export const CheckboxField = ({ label, id, ...props }) => {
                 className={`form-check-input ${meta.touched && meta.error && 'is-invalid'}`}
                 type="checkbox"
                 id={id}
+                checked={field.value}
                 {...field} {...props} 
             />
             <label className="form-check-label" htmlFor={id}>{label}</label>
