@@ -114,13 +114,6 @@ export const SignUp = () => {
                                                     <TextField name={`preferences.${index}.title`} placeholder="Type your preference" type="text" />
 
                                                     <button
-                                                        className="btn btn-secondary btn-sm mb-3 "
-                                                        onClick={() => arrayHelpers.push(returnNewPreferenceObject())} 
-                                                        type="button">
-                                                        + preference
-                                                    </button>
-
-                                                    <button
                                                         className="btn btn-danger btn-sm ml-3 mb-3 "
                                                         onClick={() => index > 0 && arrayHelpers.remove(index)} 
                                                         type="button">
@@ -128,8 +121,14 @@ export const SignUp = () => {
                                                     </button>  
                                                 </div>
                                             )
-                                        })}
-                                    
+                                        })}                                    
+                                        
+                                        <button
+                                            className="btn btn-secondary btn-sm mb-3 "
+                                            onClick={() => arrayHelpers.push(returnNewPreferenceObject())} 
+                                            type="button">
+                                            + preference
+                                        </button>
                                     </div>
                                 )}
                             </FieldArray>
